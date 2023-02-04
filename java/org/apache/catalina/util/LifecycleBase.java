@@ -54,7 +54,7 @@ public abstract class LifecycleBase implements Lifecycle {
 
     /**
      * The current state of the source component.
-     * 记录当前对象状态的实例
+     * 记录当前对象状态的实例，刚刚被创建出来的初始状态就是 NEW
      */
     private volatile LifecycleState state = LifecycleState.NEW;
 
@@ -141,7 +141,7 @@ public abstract class LifecycleBase implements Lifecycle {
      * @throws LifecycleException
      */
     @Override
-    public final synchronized void init() throws LifecycleException {
+    public final synchronized void init() throws LifecycleException { // init是个模版
         if (!state.equals(LifecycleState.NEW)) {
             // 无效的操作  只有状态为 New 的才能调用init方法进入初始化
             invalidTransition(Lifecycle.BEFORE_INIT_EVENT);
@@ -150,7 +150,7 @@ public abstract class LifecycleBase implements Lifecycle {
         try {
             // 设置状态为初始化进行中....同步在方法中会触发对应的事件
             setStateInternal(LifecycleState.INITIALIZING, null, false);
-            initInternal(); // 交给子类具体的实现 初始化操作
+            initInternal(); // 交给子类具体的实现 初始化操作。  看StandardServer和StandardService
             // 更新状态为初始化完成 同步在方法中会触发对应的事件
             setStateInternal(LifecycleState.INITIALIZED, null, false);
         } catch (Throwable t) {
@@ -174,7 +174,7 @@ public abstract class LifecycleBase implements Lifecycle {
      * {@inheritDoc}
      */
     @Override
-    public final synchronized void start() throws LifecycleException {
+    public final synchronized void start() throws LifecycleException { // start也是个模版
 
         if (LifecycleState.STARTING_PREP.equals(state) || LifecycleState.STARTING.equals(state) ||
                 LifecycleState.STARTED.equals(state)) {
@@ -440,7 +440,7 @@ public abstract class LifecycleBase implements Lifecycle {
             }
         }
 
-        this.state = state; // 修改当前对象的状态
+        this.state = state; // ‼️修改当前对象的状态
         // 根据状态和事件的绑定关系获取对应的事件
         String lifecycleEvent = state.getLifecycleEvent();
         if (lifecycleEvent != null) {
