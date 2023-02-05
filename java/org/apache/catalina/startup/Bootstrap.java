@@ -265,7 +265,7 @@ public final class Bootstrap {
         Class<?> startupClass = catalinaLoader
             .loadClass("org.apache.catalina.startup.Catalina");
         // 创建了 Catalina 实例
-        Object startupInstance = startupClass.getConstructor().newInstance();
+        Object startupInstance = startupClass.getConstructor().newInstance(); // startupInstance 就是个Catalina类的对象
 
         // Set the shared extensions class loader
         if (log.isDebugEnabled()) {
@@ -273,7 +273,7 @@ public final class Bootstrap {
         }
         String methodName = "setParentClassLoader";
         Class<?> paramTypes[] = new Class[1];
-        paramTypes[0] = Class.forName("java.lang.ClassLoader");
+        paramTypes[0] = Class.forName("java.lang.ClassLoader"); // 把java.lang.ClassLoader设置为父·类加载器
         Object paramValues[] = new Object[1];
         paramValues[0] = sharedLoader;
         // 把 sharedLoader 设置为了 commonLoader的父加载器
@@ -281,7 +281,7 @@ public final class Bootstrap {
             startupInstance.getClass().getMethod(methodName, paramTypes);
         method.invoke(startupInstance, paramValues);
         // Catalina 实例 赋值给了 catalinaDaemon
-        catalinaDaemon = startupInstance;
+        catalinaDaemon = startupInstance;  // catalinaDaemon就是个Catalina类的对象
     }
 
 
@@ -304,7 +304,7 @@ public final class Bootstrap {
             param[0] = arguments;
         }
         Method method =
-            catalinaDaemon.getClass().getMethod(methodName, paramTypes);
+            catalinaDaemon.getClass().getMethod(methodName, paramTypes); // Catalina.load()
         if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
         }
@@ -344,12 +344,12 @@ public final class Bootstrap {
      * @throws Exception Fatal start error
      */
     public void start() throws Exception {
-        if (catalinaDaemon == null) {
+        if (catalinaDaemon == null) { // catalinaDaemon就是个Catalina类的对象
             init();
         }
 
-        Method method = catalinaDaemon.getClass().getMethod("start", (Class [])null);
-        // 执行 Catalina 的start方法
+        Method method = catalinaDaemon.getClass().getMethod("start", (Class [])null); // Catalina.start()
+        // 以反射的方式执行 Catalina 类的start方法
         method.invoke(catalinaDaemon, (Object [])null);
     }
 
@@ -467,7 +467,7 @@ public final class Bootstrap {
             }
         }
 
-        try {
+        try { // 判断启动参数
             String command = "start";
             if (args.length > 0) {
                 command = args[args.length - 1];

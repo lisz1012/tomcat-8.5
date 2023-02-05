@@ -150,7 +150,7 @@ public abstract class LifecycleBase implements Lifecycle {
         try {
             // 设置状态为初始化进行中....同步在方法中会触发对应的事件
             setStateInternal(LifecycleState.INITIALIZING, null, false);
-            initInternal(); // 交给子类具体的实现 初始化操作。  看StandardServer和StandardService
+            initInternal(); // ‼️交给子类具体的实现 初始化操作。  看StandardServer和StandardService
             // 更新状态为初始化完成 同步在方法中会触发对应的事件
             setStateInternal(LifecycleState.INITIALIZED, null, false);
         } catch (Throwable t) {
@@ -189,7 +189,7 @@ public abstract class LifecycleBase implements Lifecycle {
             return;
         }
 
-        if (state.equals(LifecycleState.NEW)) {
+        if (state.equals(LifecycleState.NEW)) {  // 补上init那一步
             init();
         } else if (state.equals(LifecycleState.FAILED)) {
             stop();
@@ -202,8 +202,8 @@ public abstract class LifecycleBase implements Lifecycle {
             // 设置状态为启动之前
             setStateInternal(LifecycleState.STARTING_PREP, null, false);
             // 交给子类来具体的实现
-            startInternal();
-            // 子类处理完成后
+            startInternal();  // ‼️主要是这一步
+            // 根据上一句子类处理完成后会出现的不同的情况
             if (state.equals(LifecycleState.FAILED)) {
                 // This is a 'controlled' failure. The component put itself into the
                 // FAILED state so call stop() to complete the clean-up.
@@ -312,7 +312,7 @@ public abstract class LifecycleBase implements Lifecycle {
     public final synchronized void destroy() throws LifecycleException {
         if (LifecycleState.FAILED.equals(state)) {
             try {
-                // Triggers clean-up
+                // Triggers clean-up. stop里面最终的finally中还是会再次调用destroy，回到这里，但是那时候的状态就是STOPPED了
                 stop();
             } catch (LifecycleException e) {
                 // Just log. Still want to destroy.

@@ -811,7 +811,7 @@ public class StandardHost extends ContainerBase implements Host {
         if ((errorValve != null) && (!errorValve.equals(""))) {
             try {
                 boolean found = false;
-                Valve[] valves = getPipeline().getValves();
+                Valve[] valves = getPipeline().getValves();  // ‼️ Valves是一个整个tomcat的global的责任链
                 for (Valve valve : valves) {
                     if (errorValve.equals(valve.getClass().getName())) {
                         found = true;

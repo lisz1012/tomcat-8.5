@@ -639,7 +639,7 @@ public class Catalina {
 
         // 启动Server 服务
         try {
-            getServer().init(); // 完成 Server  Service Engine Connector等组件的init操作
+            getServer().init(); // 完成 Server  Service Engine Connector等组件的init操作.‼️各种生命周期开始咯！
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {
                 throw new java.lang.Error(e);
