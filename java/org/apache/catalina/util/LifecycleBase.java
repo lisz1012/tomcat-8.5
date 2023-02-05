@@ -141,7 +141,7 @@ public abstract class LifecycleBase implements Lifecycle {
      * @throws LifecycleException
      */
     @Override
-    public final synchronized void init() throws LifecycleException { // init是个模版
+    public final synchronized void init() throws LifecycleException { // init是个模版.
         if (!state.equals(LifecycleState.NEW)) {
             // 无效的操作  只有状态为 New 的才能调用init方法进入初始化
             invalidTransition(Lifecycle.BEFORE_INIT_EVENT);
